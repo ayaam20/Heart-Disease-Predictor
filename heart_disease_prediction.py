@@ -41,7 +41,6 @@ for col in numeric_df.columns:
 
 # Pearson correlation matrix
 correlation_matrix = data.corr(method='pearson')
-plt.figure(figsize=(12, 10))
 plt.figure(figsize=(10, 8))
 sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
 plt.title("Correlation matrix")
@@ -61,6 +60,7 @@ models = {
     'XGBoost': XGBClassifier(eval_metric='logloss', random_state=42),
     'LightGBM': LGBMClassifier(num_leaves=31, n_estimators=50, verbose=-1)
 }
+
 # Test-set performance of baseline models
 print("\n" + "=" * 50)
 print("Test-set performance of baseline models")
@@ -83,6 +83,7 @@ for name, model in models.items():
     print(f"\n{name}:")
     print(f"  Fold accuracies: {np.round(cv_scores, 3)}")
     print(f"  Mean accuracy: {cv_scores.mean():.1%}, standard deviation: {cv_scores.std():.1%}")
+
 
 # Hyperparameter tuning
 print("\n" + "=" * 50)
@@ -107,6 +108,7 @@ grid_lr.fit(X_train, y_train)
 print(f"  Best parameters: {grid_lr.best_params_}")
 print(f"  Best cross-validation accuracy: {grid_lr.best_score_:.1%}")
 
+
 # Confusion matrices
 for name, model in models.items():
     model.fit(X_train, y_train)
@@ -119,7 +121,7 @@ for name, model in models.items():
     plt.xlabel('Predicted label')
     plt.savefig(f'confusion_matrix_{name}.png')
     plt.show()
-plt.show()
+
 
 # ROC curves
 for name, model in models.items():
@@ -138,6 +140,7 @@ plt.tight_layout()
 plt.savefig('roc_curves.png')
 plt.show()
 
+
 # Model accuracy comparison
 model_names = list(models.keys())
 accuracies = []
@@ -153,6 +156,7 @@ plt.title('Test accuracy by model')
 plt.xticks(rotation=45)
 plt.savefig('model_accuracy_comparison.png')
 plt.show()
+
 
 # Cross-validation score comparison
 plt.figure(figsize=(10, 6))
