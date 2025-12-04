@@ -22,12 +22,10 @@ print("=" * 50)
 print(f"Number of patient records: {data.shape[0]}")
 print(f"Number of clinical features: {data.shape[1] - 1}")
 print(f"Missing values detected: {int(data.isnull().sum().sum())}")
-print(
-    f"Class distribution -> heart disease: {y.value_counts()[1]} "
-    f"({y.value_counts()[1] / len(y) * 100:.1f}%), "
-    f"no heart disease: {y.value_counts()[0]} "
-    f"({y.value_counts()[0] / len(y) * 100:.1f}%)."
-    )
+print(f"Class distribution -> heart disease: {y.value_counts()[1]} "
+      f"({y.value_counts()[1] / len(y) * 100:.1f}%), "
+      f"no heart disease: {y.value_counts()[0]} "
+      f"({y.value_counts()[0] / len(y) * 100:.1f}%).")
 
 numeric_df = data.select_dtypes(include=['number'])
 for col in numeric_df.columns:
@@ -36,7 +34,7 @@ for col in numeric_df.columns:
     plt.title(f"Distribution of {col}")
     plt.xlabel(col)
     plt.ylabel("Frequency")
-    plt.savefig(f'histogram_{col}.png')
+    plt.savefig(f'outputs/histogram_{col}.png')
     plt.close()
 
 # Pearson correlation matrix
@@ -44,7 +42,7 @@ correlation_matrix = data.corr(method='pearson')
 plt.figure(figsize=(10, 8))
 sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
 plt.title("Correlation matrix")
-plt.savefig('pearson_correlation_heatmap.png')
+plt.savefig('outputs/pearson_correlation_heatmap.png')
 plt.show()
 
 scaler = StandardScaler()
@@ -84,7 +82,6 @@ for name, model in models.items():
     print(f"  Fold accuracies: {np.round(cv_scores, 3)}")
     print(f"  Mean accuracy: {cv_scores.mean():.1%}, standard deviation: {cv_scores.std():.1%}")
 
-
 # Hyperparameter tuning
 print("\n" + "=" * 50)
 print("Hyperparameter tuning with Grid Search")
@@ -108,6 +105,29 @@ grid_lr.fit(X_train, y_train)
 print(f"  Best parameters: {grid_lr.best_params_}")
 print(f"  Best cross-validation accuracy: {grid_lr.best_score_:.1%}")
 
+best_lr = grid_lr.best_estimator_
+best_rf = grid_rf.best_estimator_
+best_dt = grid_dt.best_estimator_
+print("\n" + "=" * 50)
+print("Test-set performance of tuned models")
+print("=" * 50)
+print(f"Tuned Logistic Regression test accuracy: {accuracy_score(y_test, best_lr.predict(X_test)):.1%}")
+print(f"Tuned Random Forest test accuracy: {accuracy_score(y_test, best_rf.predict(X_test)):.1%}")
+print(f"Tuned Decision Tree test accuracy: {accuracy_score(y_test, best_dt.predict(X_test)):.1%}")
+print("\n")
+
+# Feature importance from Random Forest
+rf_model = RandomForestClassifier(random_state=42).fit(X_train, y_train)
+importances = rf_model.feature_importances_
+features = data.columns[:-1]
+indices = np.argsort(importances)[-10:]
+plt.figure(figsize=(10, 6))
+plt.barh(range(10), importances[indices])
+plt.yticks(range(10), [features[i] for i in indices])
+plt.xlabel('Importance')
+plt.title('Top 10 Features')
+plt.savefig('outputs/feature_importance.png')
+plt.show()
 
 # Confusion matrices
 for name, model in models.items():
@@ -119,7 +139,7 @@ for name, model in models.items():
     plt.title(f'{name} Confusion Matrix')
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
-    plt.savefig(f'confusion_matrix_{name}.png')
+    plt.savefig(f'outputs/confusion_matrix_{name}.png')
     plt.show()
 
 
@@ -137,9 +157,8 @@ plt.title('ROC curves for all models')
 plt.legend()
 plt.grid()
 plt.tight_layout()
-plt.savefig('roc_curves.png')
+plt.savefig('outputs/roc_curves.png')
 plt.show()
-
 
 # Model accuracy comparison
 model_names = list(models.keys())
@@ -154,9 +173,8 @@ plt.bar(model_names, accuracies)
 plt.ylabel('Accuracy')
 plt.title('Test accuracy by model')
 plt.xticks(rotation=45)
-plt.savefig('model_accuracy_comparison.png')
+plt.savefig('outputs/model_accuracy_comparison.png')
 plt.show()
-
 
 # Cross-validation score comparison
 plt.figure(figsize=(10, 6))
@@ -164,5 +182,5 @@ plt.bar(list(cv_results.keys()), list(cv_results.values()))
 plt.ylabel('Mean CV accuracy')
 plt.title('Cross-validation scores')
 plt.xticks(rotation=45)
-plt.savefig('cv_scores_comparison.png')
+plt.savefig('outputs/cv_scores_comparison.png')
 plt.show()
