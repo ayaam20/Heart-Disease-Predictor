@@ -40,9 +40,9 @@ for col in numeric_df.columns:
     plt.tight_layout()
     plt.savefig(f'histogram_{col}.png', dpi=150, bbox_inches='tight')
     plt.close()
-print("Histogram figures saved for all numerical features.")
+print("Histogram figures saved.")
 
-print("\nComputing Pearson correlation matrix.")
+print("\Pearson correlation matrix")
 correlation_matrix = data.corr(method='pearson')
 plt.figure(figsize=(12, 10))
 sns.heatmap(
@@ -59,7 +59,7 @@ plt.title("Pearson correlation matrix for clinical features", fontsize=14, fontw
 plt.tight_layout()
 plt.savefig('pearson_correlation_heatmap.png', dpi=300, bbox_inches='tight')
 plt.show()
-print("Correlation heatmap saved to 'pearson_correlation_heatmap.png'.")
+print("Correlation saved")
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
@@ -85,7 +85,7 @@ for name, model in models.items():
     print(classification_report(y_test, y_pred))
 
 print("\n" + "=" * 60)
-print("5-fold cross-validation performance")
+print("5-fold cross-validation")
 print("=" * 60)
 cv_results = {}
 for name, model in models.items():
@@ -95,7 +95,6 @@ for name, model in models.items():
     print(f"  Fold accuracies: {np.round(cv_scores, 3)}")
     print(f"  Mean accuracy: {cv_scores.mean():.1%}, standard deviation: {cv_scores.std():.1%}")
 
-print("\n" + "=" * 60)
 print("Hyperparameter optimization (GridSearchCV)")
 print("=" * 60)
 
@@ -137,7 +136,7 @@ for idx, (name, model) in enumerate(models.items()):
 plt.tight_layout()
 plt.savefig('confusion_matrices.png')
 plt.show()
-print("Confusion matrix grid saved to 'confusion_matrices.png'.")
+print("Confusion matrix grid saved")
 
 plt.figure(figsize=(10, 8))
 for name, model in models.items():
@@ -155,7 +154,7 @@ plt.grid()
 plt.tight_layout()
 plt.savefig('roc_curves.png')
 plt.show()
-print("ROC curve comparison saved to 'roc_curves.png'.")
+print("ROC curve comparison saved")
 
 fig, ax = plt.subplots(figsize=(10, 6))
 model_names = list(models.keys())
@@ -170,7 +169,7 @@ plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
 plt.savefig('model_accuracy_comparison.png')
 plt.show()
-print("Test accuracy comparison saved to 'model_accuracy_comparison.png'.")
+print("Test accuracy comparison saved")
 
 fig, ax = plt.subplots(figsize=(10, 6))
 cv_names = list(cv_results.keys())
@@ -185,4 +184,4 @@ plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
 plt.savefig('cv_scores_comparison.png')
 plt.show()
-print("Cross-validation comparison saved to 'cv_scores_comparison.png'.")
+print("Cross-validation comparison saved")
